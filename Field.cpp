@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "Field.h"
+#include "Cell.h"
 
 int correct_coord(int row, int col) {
 	if (row >= 0 && row < FIELD_HEIGHT && col >= 0 && col < FIELD_WIDTH) {
@@ -149,6 +150,32 @@ void restart_field(Field* field) {
 	calculate_cells(field);
 }
 
-Field field(int x, int y, int bombs) {
+Field new_field(int x, int y, int bombs) {
 	return { {}, {}, {}, x, y, FIELD_WIDTH, FIELD_HEIGHT, bombs };
+}
+
+void draw_field(HDC hdc, Field* field) {
+	for (int x = 0; x < FIELD_WIDTH; x++) {
+		for (int y = 0; y < FIELD_HEIGHT; y++) {
+			if (!is_opened(field, y, x)) {
+				POINT cursor;
+				GetCursorPos(&cursor);
+				cursor.x -= field->x;
+				cursor.y -= field->y;
+				RECT cell = { x * CELL_WIDTH, y * CELL_HEIGHT, x * CELL_WIDTH + CELL_WIDTH, y * CELL_HEIGHT + CELL_HEIGHT };
+				if (cursor.x <= cell.left && cursor.x >= cell.right) {
+					if (cursor.y <= cell.bottom && cursor.y >= cell.top) {
+						draw_active_curtain(hdc, field->x + x * CELL_WIDTH, field->y + y * CELL_HEIGHT, is_flag(field, y, x));
+						continue;
+					}
+				}
+			}
+			if ((x + y) % 2 == 0) {
+				draw_even_cell(hdc, field->x + x * CELL_WIDTH, field->y + y * CELL_HEIGHT, get_cell(field, y, x), is_opened(field, y, x), is_flag(field, y, x));
+			}
+			else {
+				draw_odd_cell(hdc, field->x + x * CELL_WIDTH, field->y + y * CELL_HEIGHT, get_cell(field, y, x), is_opened(field, y, x), is_flag(field, y, x));
+			}
+		}
+	}
 }
