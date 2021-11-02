@@ -3,7 +3,7 @@
 #define CELL_WIDTH 50
 #define CELL_HEIGHT 50
 
-void draw_even_backgournd(HDC hdc, int x, int y);
+void draw_even_background(HDC hdc, int x, int y);
 
 void draw_odd_background(HDC hdc, int x, int y);
 
@@ -15,10 +15,12 @@ void draw_even_curtain(HDC hdc, int x, int y);
 
 void draw_odd_curtain(HDC hdc, int x, int y);
 
-void draw_active_curtain(HDC hdc, int x, int y, int flagged);
+void draw_active_curtain(HDC hdc, int x, int y);
 
 void draw_flag(HDC hdc, int x, int y);
 
 void draw_even_cell(HDC hdc, int x, int y, int value, int opened, int flagged);
 
 void draw_odd_cell(HDC hdc, int x, int y, int value, int opened, int flagged);
+
+void draw_avtive_cell(HDC hdc, int x, int y, int flagged);
