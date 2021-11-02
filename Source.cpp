@@ -20,3 +20,11 @@ int check_field(Field* field) {
 	}
 	return 1;
 }
+
+int put_bomb(Field* field, int row, int col) {
+	if (row >= 0 && row < HEIGHT && col >= 0 && col < WIDTH) {
+		field->actual[row][col] = -1;
+		return 0;
+	}
+	return -1;
+}
