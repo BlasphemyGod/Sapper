@@ -82,7 +82,7 @@ int set_cell(Field* field, int row, int col, int value) {
 	return -1;
 }
 
-int calculate_cells(Field* field) {
+void calculate_cells(Field* field) {
 	for (int x = 0; x < FIELD_WIDTH; x++) {
 		for (int y = 0; y < FIELD_HEIGHT; y++) {
 			if (get_cell(field, y, x) != -1) {
@@ -149,6 +149,6 @@ void restart_field(Field* field) {
 	calculate_cells(field);
 }
 
-Field field(int bombs) {
-	return { {}, {}, {}, FIELD_WIDTH, FIELD_HEIGHT, bombs };
+Field field(int x, int y, int bombs) {
+	return { {}, {}, {}, x, y, FIELD_WIDTH, FIELD_HEIGHT, bombs };
 }

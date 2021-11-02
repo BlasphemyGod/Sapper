@@ -64,6 +64,16 @@ void draw_even_curtain(HDC hdc, int x, int y) {
 	DeleteObject(hBrush);
 }
 
+void draw_odd_curtain(HDC hdc, int x, int y) {
+	HPEN hPen = CreatePen(PS_SOLID, 0, odd_curtain);
+	HBRUSH hBrush = CreateSolidBrush(odd_curtain);
+	SelectObject(hdc, hPen);
+	SelectObject(hdc, hBrush);
+	Rectangle(hdc, x, y, x + CELL_WIDTH, y + CELL_HEIGHT);
+	DeleteObject(hPen);
+	DeleteObject(hBrush);
+}
+
 void draw_flag(HDC hdc, int x, int y) {
 	SetTextColor(hdc, RGB(255, 0, 0));
 	SetBkMode(hdc, TRANSPARENT);
