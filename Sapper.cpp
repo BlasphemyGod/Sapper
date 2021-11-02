@@ -118,6 +118,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+    case WM_LBUTTONDOWN:
+        {
+            mouse_button_click(&field, 1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+        }
+    case WM_RBUTTONDOWN:
+        {
+            mouse_button_click(&field, 2, GET_Y_LPARAM(lParam), GET_Y_LPARAM(lParam));
+        }
     case WM_PAINT:
         {
             PAINTSTRUCT ps;

@@ -155,19 +155,17 @@ Field new_field(int x, int y, int bombs) {
 }
 
 void draw_field(HDC hdc, Field* field) {
+	POINT cursor;
+	GetCursorPos(&cursor);
+	cursor.x -= field->x;
+	cursor.y -= field->y;
 	for (int x = 0; x < FIELD_WIDTH; x++) {
 		for (int y = 0; y < FIELD_HEIGHT; y++) {
 			if (!is_opened(field, y, x)) {
-				POINT cursor;
-				GetCursorPos(&cursor);
-				cursor.x -= field->x;
-				cursor.y -= field->y;
 				RECT cell = { x * CELL_WIDTH, y * CELL_HEIGHT, x * CELL_WIDTH + CELL_WIDTH, y * CELL_HEIGHT + CELL_HEIGHT };
-				if (cursor.x <= cell.left && cursor.x >= cell.right) {
-					if (cursor.y <= cell.bottom && cursor.y >= cell.top) {
-						draw_active_curtain(hdc, field->x + x * CELL_WIDTH, field->y + y * CELL_HEIGHT, is_flag(field, y, x));
-						continue;
-					}
+				if (PtInRect(&cell, cursor)) {
+					draw_active_cell(hdc, field->x + x * CELL_WIDTH, field->y + y * CELL_HEIGHT, is_flag(field, y, x));
+					continue;
 				}
 			}
 			if ((x + y) % 2 == 0) {
@@ -175,6 +173,31 @@ void draw_field(HDC hdc, Field* field) {
 			}
 			else {
 				draw_odd_cell(hdc, field->x + x * CELL_WIDTH, field->y + y * CELL_HEIGHT, get_cell(field, y, x), is_opened(field, y, x), is_flag(field, y, x));
+			}
+		}
+	}
+}
+
+void mouse_button_click(Field* field, int mouse_button, int x, int y) {
+	x -= field->x;
+	y -= field->y;
+	if (mouse_button == 1) {
+		for (int col = 0; col < FIELD_WIDTH; col++) {
+			for (int row = 0; row < FIELD_HEIGHT; row++) {
+				RECT cell = { col * CELL_WIDTH, row * CELL_HEIGHT, col * CELL_WIDTH + CELL_WIDTH, row * CELL_HEIGHT + CELL_HEIGHT };
+				if (PtInRect(&cell, { x, y })) {
+					open_cell(field, row, col);
+				}
+			}
+		}
+	}
+	else if (mouse_button == 2) {
+		for (int col = 0; col < FIELD_WIDTH; col++) {
+			for (int row = 0; row < FIELD_HEIGHT; row++) {
+				RECT cell = { col * CELL_WIDTH, row * CELL_HEIGHT, col * CELL_WIDTH + CELL_WIDTH, row * CELL_HEIGHT + CELL_HEIGHT };
+				if (PtInRect(&cell, { x, y })) {
+					swap_flag(field, row, col);
+				}
 			}
 		}
 	}

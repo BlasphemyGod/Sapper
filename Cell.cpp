@@ -15,7 +15,7 @@ const COLORREF odd_background = RGB(215, 184, 153);
 const COLORREF active_curtain = RGB(180, 225, 91);
 const COLORREF even_curtain = RGB(170, 215, 81);
 const COLORREF odd_curtain = RGB(162, 209, 73);
-const HFONT hFont = CreateFont(-40, 0, 0, 0, 0, ANSI_CHARSET, 0, 0, 0, 0, 0, 0, 0, TEXT("Arial"));
+const HFONT hFont = CreateFont(-28, 0, 0, 0, 0, ANSI_CHARSET, 0, 0, 0, 0, 0, 0, 0, TEXT("Arial"));
 
 void draw_even_background(HDC hdc, int x, int y) {
 	HPEN hPen = CreatePen(PS_SOLID, 0, even_background);
@@ -92,12 +92,14 @@ void draw_flag(HDC hdc, int x, int y) {
 }
 
 void draw_even_cell(HDC hdc, int x, int y, int value, int opened, int flagged) {
-	draw_even_background(hdc, x, y);
-	if (value == -1) {
-		draw_bomb(hdc, x, y);
-	}
-	else {
-		draw_number(hdc, x, y, value);
+	if (opened) {
+		draw_even_background(hdc, x, y);
+		if (value == -1) {
+			draw_bomb(hdc, x, y);
+		}
+		else {
+			draw_number(hdc, x, y, value);
+		}
 	}
 	if (!opened) {
 		draw_even_curtain(hdc, x, y);
@@ -108,12 +110,14 @@ void draw_even_cell(HDC hdc, int x, int y, int value, int opened, int flagged) {
 }
 
 void draw_odd_cell(HDC hdc, int x, int y, int value, int opened, int flagged) {
-	draw_odd_background(hdc, x, y);
-	if (value == -1) {
-		draw_bomb(hdc, x, y);
-	}
-	else {
-		draw_number(hdc, x, y, value);
+	if (opened) {
+		draw_odd_background(hdc, x, y);
+		if (value == -1) {
+			draw_bomb(hdc, x, y);
+		}
+		else {
+			draw_number(hdc, x, y, value);
+		}
 	}
 	if (!opened) {
 		draw_odd_curtain(hdc, x, y);

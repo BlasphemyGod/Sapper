@@ -48,3 +48,5 @@ void restart_field(Field* field);
 Field new_field(int x, int y, int bombs);
 
 void draw_field(HDC hdc, Field* field);
+
+void mouse_button_click(Field* field, int mouse_button, int x, int y);
