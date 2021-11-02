@@ -19,7 +19,7 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-Field field = new_field(0, 100, 10);
+Field field = new_field(0, 100, 30);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -81,7 +81,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance;
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, 435, 559, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -100,7 +100,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE: 
         {
+            SetMenu(hWnd, NULL);
             restart_field(&field);
+            break;
         }
     case WM_COMMAND:
         {
@@ -124,6 +126,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             mouse_button_click(&field, 1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
             InvalidateRect(hWnd, NULL, TRUE);
+            if (check_field(&field) == 1) {
+                MessageBox(hWnd, TEXT("YOU WIN!"), TEXT("Congratulations!"), MB_OK);
+                restart_field(&field);
+            }
+            else if (check_field(&field) == -1) {
+                MessageBox(hWnd, TEXT("YOU LOSE!"), TEXT("Oh my God!"), MB_OK);
+                restart_field(&field);
+            }
         } break;
     case WM_RBUTTONDOWN:
         {

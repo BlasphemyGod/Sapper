@@ -11,17 +11,18 @@ int correct_coord(int row, int col) {
 }
 
 int check_field(const Field* field) {
+	int result = 1;
 	for (int x = 0; x < FIELD_WIDTH; x++) {
 		for (int y = 0; y < FIELD_HEIGHT; y++) {
 			if (field->opened[y][x] && field->cells[y][x] == -1) {
 				return -1;
 			}
 			else if (!field->opened[y][x] && field->cells[y][x] != -1) {
-				return 0;
+				result = 0;
 			}
 		}
 	}
-	return 1;
+	return result;
 }
 
 int set_bomb(Field* field, int row, int col) {
@@ -156,6 +157,7 @@ Field new_field(int x, int y, int bombs) {
 
 void draw_field(HDC hdc, HWND hWnd, Field* field) {
 	POINT cursor;
+	GetCursorPos(&cursor);
 	ScreenToClient(hWnd, &cursor);
 	cursor.x -= field->x;
 	cursor.y -= field->y;
