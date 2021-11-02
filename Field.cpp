@@ -106,3 +106,18 @@ void open_cell(Field* field, int row, int col) {
 		}
 	}
 }
+
+void close_cell(Field* field, int row, int col) {
+	if (correct_coord(row, col)) {
+		field->opened[row][col] = 0;
+	}
+}
+
+void clear_field(Field* field) {
+	for (int x = 0; x < WIDTH; x++) {
+		for (int y = 0; y < HEIGHT; y++) {
+			field->cells[y][x] = 0;
+			field->opened[y][x] = 0;
+		}
+	}
+}
