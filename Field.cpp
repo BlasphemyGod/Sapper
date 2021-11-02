@@ -1,14 +1,6 @@
 #include <stdlib.h>
-#define WIDTH 14
-#define HEIGHT 14
-
-struct Field {
-	int cells[HEIGHT][WIDTH];
-	int opened[HEIGHT][WIDTH];
-	int width;
-	int height;
-	int bombs;
-};
+#include <time.h>
+#include "Field.h"
 
 int correct_coord(int row, int col) {
 	if (row >= 0 && row < HEIGHT && col >= 0 && col < WIDTH) {
@@ -31,7 +23,7 @@ int check_field(const Field* field) {
 	return 1;
 }
 
-int put_bomb(Field* field, int row, int col) {
+int set_bomb(Field* field, int row, int col) {
 	if (correct_coord(row, col)) {
 		field->cells[row][col] = -1;
 		return 0;
@@ -120,4 +112,27 @@ void clear_field(Field* field) {
 			field->opened[y][x] = 0;
 		}
 	}
+}
+
+void restart_field(Field* field) {
+	srand(time(NULL));
+	clear_field(field);
+	int linear[WIDTH * HEIGHT] = {};
+	for (int i = 0; i < field->bombs; i++) {
+		linear[i] = -1;
+	}
+	for (int i = WIDTH * HEIGHT - 1; i > 0; i--) {
+		int temp = linear[i];
+		int j = rand() % (i + 1);
+		linear[i] = linear[j];
+		linear[j] = temp;
+	}
+	for (int i = 0; i < WIDTH * HEIGHT; i++) {
+		set_cell(field, i / WIDTH, i % WIDTH, linear[i]);
+	}
+	calculate_cells(field);
+}
+
+Field field(int bombs) {
+	return { {}, {}, WIDTH, HEIGHT, bombs };
 }
