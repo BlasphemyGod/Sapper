@@ -46,6 +46,13 @@ int is_bomb(const Field* field, int row, int col) {
 	return 0;
 }
 
+int is_opened(const Field* field, int row, int col) {
+	if (correct_coord(row, col)) {
+		return field->opened[row][col];
+	}
+	return 0;
+}
+
 int get_cell(const Field* field, int row, int col) {
 	if (correct_coord(row, col)) {
 		return field->cells[row][col];
@@ -79,6 +86,23 @@ int calculate_cells(Field* field) {
 					is_bomb(field, y + 1, x - 1) + is_bomb(field, y, x - 1)
 				);
 			}
+		}
+	}
+}
+
+void open_cell(Field* field, int row, int col) {
+	if (correct_coord(row, col) && !is_opened(field, row, col)) {
+		int cell = get_cell(field, row, col);
+		field->opened[row][col] = 1;
+		if (cell == 0) {
+			open_cell(field, row - 1, col - 1);
+			open_cell(field, row - 1, col);
+			open_cell(field, row - 1, col + 1);
+			open_cell(field, row, col + 1);
+			open_cell(field, row + 1, col + 1);
+			open_cell(field, row + 1, col);
+			open_cell(field, row + 1, col - 1);
+			open_cell(field, row, col - 1);
 		}
 	}
 }
