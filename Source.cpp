@@ -41,8 +41,16 @@ int put_bomb(Field* field, int row, int col) {
 
 int get_cell(Field* field, int row, int col) {
 	if (correct_coord(row, col)) {
-
+		return field->cells[row][col];
 	}
+	return -2;
+}
+
+int* get_cell_ptr(Field* field, int row, int col) {
+	if (correct_coord(row, col)) {
+		return &field->cells[row][col];
+	}
+	return NULL;
 }
 
 int calculate_cells(Field* field) {
