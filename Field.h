@@ -1,12 +1,12 @@
 #pragma once
-#define WIDTH 14
-#define HEIGHT 14
+#define FIELD_WIDTH 14
+#define FIELD_HEIGHT 14
 
 
 typedef struct {
-	int cells[HEIGHT][WIDTH];
-	int opened[HEIGHT][WIDTH];
-	int flags[HEIGHT][WIDTH];
+	int cells[FIELD_HEIGHT][FIELD_WIDTH];
+	int opened[FIELD_HEIGHT][FIELD_WIDTH];
+	int flags[FIELD_HEIGHT][FIELD_WIDTH];
 	int width;
 	int height;
 	int bombs;

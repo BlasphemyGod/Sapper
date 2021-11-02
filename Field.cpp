@@ -3,15 +3,15 @@
 #include "Field.h"
 
 int correct_coord(int row, int col) {
-	if (row >= 0 && row < HEIGHT && col >= 0 && col < WIDTH) {
+	if (row >= 0 && row < FIELD_HEIGHT && col >= 0 && col < FIELD_WIDTH) {
 		return 1;
 	}
 	return 0;
 }
 
 int check_field(const Field* field) {
-	for (int x = 0; x < WIDTH; x++) {
-		for (int y = 0; y < HEIGHT; y++) {
+	for (int x = 0; x < FIELD_WIDTH; x++) {
+		for (int y = 0; y < FIELD_HEIGHT; y++) {
 			if (field->opened[y][x] && field->cells[y][x] == -1) {
 				return -1;
 			}
@@ -83,8 +83,8 @@ int set_cell(Field* field, int row, int col, int value) {
 }
 
 int calculate_cells(Field* field) {
-	for (int x = 0; x < WIDTH; x++) {
-		for (int y = 0; y < HEIGHT; y++) {
+	for (int x = 0; x < FIELD_WIDTH; x++) {
+		for (int y = 0; y < FIELD_HEIGHT; y++) {
 			if (get_cell(field, y, x) != -1) {
 				set_cell(
 					field, y, x,
@@ -121,8 +121,8 @@ void close_cell(Field* field, int row, int col) {
 }
 
 void clear_field(Field* field) {
-	for (int x = 0; x < WIDTH; x++) {
-		for (int y = 0; y < HEIGHT; y++) {
+	for (int x = 0; x < FIELD_WIDTH; x++) {
+		for (int y = 0; y < FIELD_HEIGHT; y++) {
 			field->cells[y][x] = 0;
 			field->opened[y][x] = 0;
 			field->flags[y][x] = 0;
@@ -133,22 +133,22 @@ void clear_field(Field* field) {
 void restart_field(Field* field) {
 	srand(time(NULL));
 	clear_field(field);
-	int linear[WIDTH * HEIGHT] = {};
+	int linear[FIELD_WIDTH * FIELD_HEIGHT] = {};
 	for (int i = 0; i < field->bombs; i++) {
 		linear[i] = -1;
 	}
-	for (int i = WIDTH * HEIGHT - 1; i > 0; i--) {
+	for (int i = FIELD_WIDTH * FIELD_HEIGHT - 1; i > 0; i--) {
 		int temp = linear[i];
 		int j = rand() % (i + 1);
 		linear[i] = linear[j];
 		linear[j] = temp;
 	}
-	for (int i = 0; i < WIDTH * HEIGHT; i++) {
-		set_cell(field, i / WIDTH, i % WIDTH, linear[i]);
+	for (int i = 0; i < FIELD_WIDTH * FIELD_HEIGHT; i++) {
+		set_cell(field, i / FIELD_WIDTH, i % FIELD_WIDTH, linear[i]);
 	}
 	calculate_cells(field);
 }
 
 Field field(int bombs) {
-	return { {}, {}, {}, WIDTH, HEIGHT, bombs };
+	return { {}, {}, {}, FIELD_WIDTH, FIELD_HEIGHT, bombs };
 }
