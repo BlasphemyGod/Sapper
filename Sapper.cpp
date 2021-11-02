@@ -118,19 +118,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+    case WM_ERASEBKGND:
+        return (LRESULT)1;
     case WM_LBUTTONDOWN:
         {
             mouse_button_click(&field, 1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
         }
     case WM_RBUTTONDOWN:
         {
-            mouse_button_click(&field, 2, GET_Y_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            mouse_button_click(&field, 2, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+        }
+    case WM_MOUSEMOVE:
+        {
+            InvalidateRect(hWnd, NULL, TRUE);
         }
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            draw_field(hdc, &field);
+            draw_field(hdc, hWnd, &field);
             EndPaint(hWnd, &ps);
         }
         break;

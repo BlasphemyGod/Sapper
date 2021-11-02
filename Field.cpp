@@ -154,9 +154,9 @@ Field new_field(int x, int y, int bombs) {
 	return { {}, {}, {}, x, y, FIELD_WIDTH, FIELD_HEIGHT, bombs };
 }
 
-void draw_field(HDC hdc, Field* field) {
+void draw_field(HDC hdc, HWND hWnd, Field* field) {
 	POINT cursor;
-	GetCursorPos(&cursor);
+	ScreenToClient(hWnd, &cursor);
 	cursor.x -= field->x;
 	cursor.y -= field->y;
 	for (int x = 0; x < FIELD_WIDTH; x++) {
@@ -187,6 +187,7 @@ void mouse_button_click(Field* field, int mouse_button, int x, int y) {
 				RECT cell = { col * CELL_WIDTH, row * CELL_HEIGHT, col * CELL_WIDTH + CELL_WIDTH, row * CELL_HEIGHT + CELL_HEIGHT };
 				if (PtInRect(&cell, { x, y })) {
 					open_cell(field, row, col);
+					return;
 				}
 			}
 		}
@@ -197,6 +198,7 @@ void mouse_button_click(Field* field, int mouse_button, int x, int y) {
 				RECT cell = { col * CELL_WIDTH, row * CELL_HEIGHT, col * CELL_WIDTH + CELL_WIDTH, row * CELL_HEIGHT + CELL_HEIGHT };
 				if (PtInRect(&cell, { x, y })) {
 					swap_flag(field, row, col);
+					return;
 				}
 			}
 		}
