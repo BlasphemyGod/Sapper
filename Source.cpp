@@ -39,7 +39,14 @@ int put_bomb(Field* field, int row, int col) {
 	return -1;
 }
 
-int get_cell(Field* field, int row, int col) {
+int is_bomb(const Field* field, int row, int col) {
+	if (correct_coord(row, col)) {
+		return field->cells[row][col] == -1;
+	}
+	return 0;
+}
+
+int get_cell(const Field* field, int row, int col) {
 	if (correct_coord(row, col)) {
 		return field->cells[row][col];
 	}
@@ -53,10 +60,25 @@ int* get_cell_ptr(Field* field, int row, int col) {
 	return NULL;
 }
 
+int set_cell(Field* field, int row, int col, int value) {
+	if (correct_coord(row, col)) {
+		field->cells[row][col] = value;
+		return 0;
+	}
+	return -1;
+}
+
 int calculate_cells(Field* field) {
 	for (int x = 0; x < WIDTH; x++) {
 		for (int y = 0; y < HEIGHT; y++) {
-			field->cells[y][x] = field->cells[]
+			if (get_cell(field, y, x) != -1) {
+				set_cell(
+					field, y, x,
+					is_bomb(field, y - 1, x - 1) + is_bomb(field, y - 1, x) + is_bomb(field, y - 1, x + 1) +
+					is_bomb(field, y, x + 1) + is_bomb(field, y + 1, x + 1) + is_bomb(field, y + 1, x) +
+					is_bomb(field, y + 1, x - 1) + is_bomb(field, y, x - 1)
+				);
+			}
 		}
 	}
 }
