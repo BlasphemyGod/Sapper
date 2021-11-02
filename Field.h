@@ -6,6 +6,7 @@
 typedef struct {
 	int cells[HEIGHT][WIDTH];
 	int opened[HEIGHT][WIDTH];
+	int flags[HEIGHT][WIDTH];
 	int width;
 	int height;
 	int bombs;

@@ -45,6 +45,21 @@ int is_opened(const Field* field, int row, int col) {
 	return 0;
 }
 
+int is_flag(const Field* field, int row, int col) {
+	if (correct_coord(row, col)) {
+		if (field->flags[row][col]) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+void swap_flag(Field* field, int row, int col) {
+	if (correct_coord(row, col) && !is_opened(field, row, col)) {
+		field->flags[row][col] = 1 - field->flags[row][col];
+	}
+}
+
 int get_cell(const Field* field, int row, int col) {
 	if (correct_coord(row, col)) {
 		return field->cells[row][col];
@@ -83,7 +98,7 @@ int calculate_cells(Field* field) {
 }
 
 void open_cell(Field* field, int row, int col) {
-	if (correct_coord(row, col) && !is_opened(field, row, col)) {
+	if (correct_coord(row, col) && !is_opened(field, row, col) && !is_flag(field, row, col)) {
 		int cell = get_cell(field, row, col);
 		field->opened[row][col] = 1;
 		if (cell == 0) {
@@ -110,6 +125,7 @@ void clear_field(Field* field) {
 		for (int y = 0; y < HEIGHT; y++) {
 			field->cells[y][x] = 0;
 			field->opened[y][x] = 0;
+			field->flags[y][x] = 0;
 		}
 	}
 }
@@ -134,5 +150,5 @@ void restart_field(Field* field) {
 }
 
 Field field(int bombs) {
-	return { {}, {}, WIDTH, HEIGHT, bombs };
+	return { {}, {}, {}, WIDTH, HEIGHT, bombs };
 }
