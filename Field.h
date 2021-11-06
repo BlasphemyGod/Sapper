@@ -5,14 +5,14 @@
 
 
 typedef struct {
-	int cells[FIELD_HEIGHT][FIELD_WIDTH];
-	int opened[FIELD_HEIGHT][FIELD_WIDTH];
-	int flags[FIELD_HEIGHT][FIELD_WIDTH];
-	int x;
-	int y;
-	int width;
-	int height;
-	int bombs;
+    int cells[FIELD_HEIGHT][FIELD_WIDTH];
+    int opened[FIELD_HEIGHT][FIELD_WIDTH];
+    int flags[FIELD_HEIGHT][FIELD_WIDTH];
+    int x;
+    int y;
+    int width;
+    int height;
+    int bombs;
 } Field;
 
 int correct_coord(int row, int col);
