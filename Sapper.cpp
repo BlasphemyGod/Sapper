@@ -6,6 +6,7 @@
 #include "Field.h"
 #include "Cell.h"
 #include "Timer.h"
+#include "SaveManager.h"
 
 #define MAX_LOADSTRING 100
 
@@ -156,7 +157,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             RECT bkRect = { 0, 0, 436, 100 }; FillRect(hdc, &bkRect, headerBrush);
-            draw_timer(hdc, 10, 10);
+            draw_timer(hdc);
             draw_field(hdc, hWnd, &field);
             EndPaint(hWnd, &ps);
         }

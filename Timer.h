@@ -9,4 +9,4 @@ void start_timer();
 
 void stop_timer();
 
-void draw_timer(HDC hdc, int x, int y);
+void draw_timer(HDC hdc);

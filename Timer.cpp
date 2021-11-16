@@ -8,9 +8,9 @@ int end_time = 0;
 int is_started = 0;
 const HFONT hFont = CreateFont(-32, 0, 0, 0, 0, ANSI_CHARSET, 0, 0, 0, 0, 0, 0, 0, TEXT("Arial"));
 const TCHAR* label = TEXT("Время:");
-RECT label_rect = { 0, 0, 100, 56 };
+RECT label_rect = { 10, 10, 110, 66 };
 TCHAR timer_value[20];
-RECT timer_rect = { 0, 0, 112, 56 };
+RECT timer_rect = { 110, 10, 212, 66 };
 
 int get_timer() {
 	if (!is_started) return end_time - start_time;
@@ -31,15 +31,11 @@ void stop_timer() {
 	is_started = 0;
 }
 
-void draw_timer(HDC hdc, int x, int y) {
-	OffsetRect(&label_rect, x, y);
-	OffsetRect(&timer_rect, x + 100, y);
+void draw_timer(HDC hdc) {
 	_stprintf_s(timer_value, TEXT("%04d"), get_timer());
 	SetTextColor(hdc, RGB(255, 255, 255));
 	SetBkMode(hdc, TRANSPARENT);
 	SelectObject(hdc, hFont);
 	DrawText(hdc, label, lstrlen(label), &label_rect, DT_CENTER);
 	DrawText(hdc, timer_value, lstrlen(timer_value), &timer_rect, DT_CENTER);
-	OffsetRect(&label_rect, -x, -y);
-	OffsetRect(&timer_rect, -x - 100, -y);
 }
