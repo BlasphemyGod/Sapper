@@ -192,9 +192,23 @@ void draw_field(HDC hdc, HWND hWnd, Field* field) {
     }
 }
 
+void save_first_click(Field* field, int row, int col) {
+    if (is_bomb(field, row, col)) {
+        for (int i = 0; i < field->width * field->height; i++) {
+            if (!is_bomb(field, i / field->width, i % field->width)) {
+                set_bomb(field, i / field->width, i % field->height);
+                break;
+            }
+        }
+        set_cell(field, row, col, 0);
+        calculate_cells(field);
+    }
+}
+
 void on_field_click(HWND hWnd, Field* field, int mouse_button) {
     CellPosition cell = cell_from_mouse(hWnd, field);
     if (mouse_button == 1) {
+        save_first_click(field, cell.row, cell.col);
         open_cell(field, cell.row, cell.col);
     }
     else if (mouse_button == 2) {
