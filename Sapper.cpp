@@ -124,20 +124,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return (LRESULT)1;
     case WM_LBUTTONDOWN:
         {
-            mouse_button_click(&field, 1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            on_field_click(hWnd, &field, 1);
             InvalidateRect(hWnd, NULL, TRUE);
-            if (check_field(&field) == 1) {
-                MessageBox(hWnd, TEXT("YOU WIN!"), TEXT("Congratulations!"), MB_OK);
-                restart_field(&field);
-            }
-            else if (check_field(&field) == -1) {
-                MessageBox(hWnd, TEXT("YOU LOSE!"), TEXT("Oh my God!"), MB_OK);
-                restart_field(&field);
-            }
         } break;
     case WM_RBUTTONDOWN:
         {
-            mouse_button_click(&field, 2, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            on_field_click(hWnd, &field, 2);
             InvalidateRect(hWnd, NULL, TRUE);
         } break;
     case WM_MOUSEMOVE:

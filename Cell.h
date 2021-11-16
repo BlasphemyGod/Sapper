@@ -3,6 +3,11 @@
 #define CELL_WIDTH 30
 #define CELL_HEIGHT 30
 
+typedef struct {
+	int row;
+	int col;
+} CellPosition;
+
 void draw_even_background(HDC hdc, int x, int y);
 
 void draw_odd_background(HDC hdc, int x, int y);

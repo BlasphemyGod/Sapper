@@ -152,10 +152,10 @@ void restart_field(Field* field) {
 }
 
 Field new_field(int x, int y, int bombs) {
-    return { {}, {}, {}, x, y, FIELD_WIDTH, FIELD_HEIGHT, bombs };
+    return { {}, {}, {}, 1, x, y, FIELD_WIDTH, FIELD_HEIGHT, bombs };
 }
 
-void draw_field(HDC hdc, HWND hWnd, Field* field) {
+CellPosition cell_from_mouse(HWND hWnd, Field* field) {
     POINT cursor;
     GetCursorPos(&cursor);
     ScreenToClient(hWnd, &cursor);
@@ -163,9 +163,21 @@ void draw_field(HDC hdc, HWND hWnd, Field* field) {
     cursor.y -= field->y;
     for (int x = 0; x < FIELD_WIDTH; x++) {
         for (int y = 0; y < FIELD_HEIGHT; y++) {
+            RECT cell = { x * CELL_WIDTH, y * CELL_HEIGHT, x * CELL_WIDTH + CELL_WIDTH, y * CELL_HEIGHT + CELL_HEIGHT };
+            if (PtInRect(&cell, cursor)) {
+                return { y, x };
+            }
+        }
+    }
+    return { -1, -1 };
+}
+
+void draw_field(HDC hdc, HWND hWnd, Field* field) {
+    CellPosition active_cell = cell_from_mouse(hWnd, field);
+    for (int x = 0; x < FIELD_WIDTH; x++) {
+        for (int y = 0; y < FIELD_HEIGHT; y++) {
             if (!is_opened(field, y, x)) {
-                RECT cell = { x * CELL_WIDTH, y * CELL_HEIGHT, x * CELL_WIDTH + CELL_WIDTH, y * CELL_HEIGHT + CELL_HEIGHT };
-                if (PtInRect(&cell, cursor)) {
+                if (y == active_cell.row && x == active_cell.col) {
                     draw_active_cell(hdc, field->x + x * CELL_WIDTH, field->y + y * CELL_HEIGHT, is_flag(field, y, x));
                     continue;
                 }
@@ -180,29 +192,21 @@ void draw_field(HDC hdc, HWND hWnd, Field* field) {
     }
 }
 
-void mouse_button_click(Field* field, int mouse_button, int x, int y) {
-    x -= field->x;
-    y -= field->y;
+void on_field_click(HWND hWnd, Field* field, int mouse_button) {
+    CellPosition cell = cell_from_mouse(hWnd, field);
     if (mouse_button == 1) {
-        for (int col = 0; col < FIELD_WIDTH; col++) {
-            for (int row = 0; row < FIELD_HEIGHT; row++) {
-                RECT cell = { col * CELL_WIDTH, row * CELL_HEIGHT, col * CELL_WIDTH + CELL_WIDTH, row * CELL_HEIGHT + CELL_HEIGHT };
-                if (PtInRect(&cell, { x, y })) {
-                    open_cell(field, row, col);
-                    return;
-                }
-            }
-        }
+        open_cell(field, cell.row, cell.col);
     }
     else if (mouse_button == 2) {
-        for (int col = 0; col < FIELD_WIDTH; col++) {
-            for (int row = 0; row < FIELD_HEIGHT; row++) {
-                RECT cell = { col * CELL_WIDTH, row * CELL_HEIGHT, col * CELL_WIDTH + CELL_WIDTH, row * CELL_HEIGHT + CELL_HEIGHT };
-                if (PtInRect(&cell, { x, y })) {
-                    swap_flag(field, row, col);
-                    return;
-                }
-            }
-        }
+        swap_flag(field, cell.row, cell.col);
+    }
+
+    if (check_field(field) == 1) {
+        MessageBox(hWnd, TEXT("YOU WIN!"), TEXT("Congratulations!"), MB_OK);
+        restart_field(field);
+    }
+    else if (check_field(field) == -1) {
+        MessageBox(hWnd, TEXT("YOU LOSE!"), TEXT("Oh my God!"), MB_OK);
+        restart_field(field);
     }
 }

@@ -8,6 +8,7 @@ typedef struct {
     int cells[FIELD_HEIGHT][FIELD_WIDTH];
     int opened[FIELD_HEIGHT][FIELD_WIDTH];
     int flags[FIELD_HEIGHT][FIELD_WIDTH];
+    int is_first_cell;
     int x;
     int y;
     int width;
@@ -49,4 +50,4 @@ Field new_field(int x, int y, int bombs);
 
 void draw_field(HDC hdc, HWND hWnd, Field* field);
 
-void mouse_button_click(Field* field, int mouse_button, int x, int y);
+void on_field_click(HWND hWnd, Field* field, int mouse_button);
