@@ -137,6 +137,7 @@ void clear_field(Field* field) {
 void restart_field(Field* field) {
     srand(time(NULL));
     clear_field(field);
+    field->is_first_cell = 1;
     int linear[FIELD_WIDTH * FIELD_HEIGHT] = {};
     for (int i = 0; i < field->bombs; i++) {
         linear[i] = -1;
@@ -222,10 +223,12 @@ void on_field_click(HWND hWnd, Field* field, int mouse_button) {
     }
 
     if (check_field(field) == 1) {
+        stop_timer();
         MessageBox(hWnd, TEXT("YOU WIN!"), TEXT("Congratulations!"), MB_OK);
         restart_game();
     }
     else if (check_field(field) == -1) {
+        stop_timer();
         MessageBox(hWnd, TEXT("YOU LOSE!"), TEXT("Oh my God!"), MB_OK);
         restart_game();
     }

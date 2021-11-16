@@ -99,6 +99,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 void restart_game() {
     restart_field(&field);
     stop_timer();
+    set_timer(0);
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

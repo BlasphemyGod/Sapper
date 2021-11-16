@@ -3,7 +3,8 @@
 #include <time.h>
 
 
-int start_time = time(NULL);
+int start_time = 0;
+int end_time = 0;
 int is_started = 0;
 const HFONT hFont = CreateFont(-32, 0, 0, 0, 0, ANSI_CHARSET, 0, 0, 0, 0, 0, 0, 0, TEXT("Arial"));
 const TCHAR* label = TEXT("Время:");
@@ -12,7 +13,7 @@ TCHAR timer_value[20];
 RECT timer_rect = { 0, 0, 112, 56 };
 
 int get_timer() {
-	if (!is_started) return 0;
+	if (!is_started) return end_time - start_time;
 	return time(NULL) - start_time;
 }
 
@@ -26,6 +27,7 @@ void start_timer() {
 }
 
 void stop_timer() {
+	end_time = time(NULL);
 	is_started = 0;
 }
 
