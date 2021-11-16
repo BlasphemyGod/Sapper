@@ -5,6 +5,7 @@
 #include "Sapper.h"
 #include "Field.h"
 #include "Cell.h"
+#include "Timer.h"
 
 #define MAX_LOADSTRING 100
 
@@ -20,6 +21,7 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 Field field = new_field(0, 100, 30);
+HBRUSH headerBrush = CreateSolidBrush(RGB(74, 117, 44));
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -68,7 +70,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SAPPER));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_SAPPER);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -94,15 +96,25 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
+void restart_game() {
+    restart_field(&field);
+    start_timer();
+}
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
     case WM_CREATE: 
         {
+            SetTimer(hWnd, 1, 500, NULL);
             SetMenu(hWnd, NULL);
             restart_field(&field);
             break;
+        }
+    case WM_TIMER:
+        {
+            InvalidateRect(hWnd, NULL, TRUE);
         }
     case WM_COMMAND:
         {
@@ -120,8 +132,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
-    case WM_ERASEBKGND:
-        return (LRESULT)1;
+    case WM_ERASEBKGND: 
+        {
+            return TRUE;
+        }
     case WM_LBUTTONDOWN:
         {
             on_field_click(hWnd, &field, 1);
@@ -140,6 +154,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
+            RECT bkRect = { 0, 0, 436, 100 }; FillRect(hdc, &bkRect, headerBrush);
+            draw_timer(hdc, 10, 10);
             draw_field(hdc, hWnd, &field);
             EndPaint(hWnd, &ps);
         }

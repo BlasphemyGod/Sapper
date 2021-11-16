@@ -145,11 +145,14 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sapper.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Sapper.cpp" />
     <ClCompile Include="Field.cpp" />
+    <ClCompile Include="SaveManager.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Sapper.rc" />

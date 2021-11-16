@@ -2,6 +2,8 @@
 #include <time.h>
 #include "Field.h"
 #include "Cell.h"
+#include "Timer.h"
+#include "Sapper.h"
 
 int correct_coord(int row, int col) {
     if (row >= 0 && row < FIELD_HEIGHT && col >= 0 && col < FIELD_WIDTH) {
@@ -208,7 +210,11 @@ void save_first_click(Field* field, int row, int col) {
 void on_field_click(HWND hWnd, Field* field, int mouse_button) {
     CellPosition cell = cell_from_mouse(hWnd, field);
     if (mouse_button == 1) {
-        save_first_click(field, cell.row, cell.col);
+        if (field->is_first_cell) {
+            start_timer();
+            save_first_click(field, cell.row, cell.col);
+            field->is_first_cell = 0;
+        }
         open_cell(field, cell.row, cell.col);
     }
     else if (mouse_button == 2) {
@@ -217,10 +223,10 @@ void on_field_click(HWND hWnd, Field* field, int mouse_button) {
 
     if (check_field(field) == 1) {
         MessageBox(hWnd, TEXT("YOU WIN!"), TEXT("Congratulations!"), MB_OK);
-        restart_field(field);
+        restart_game();
     }
     else if (check_field(field) == -1) {
         MessageBox(hWnd, TEXT("YOU LOSE!"), TEXT("Oh my God!"), MB_OK);
-        restart_field(field);
+        restart_game();
     }
 }
