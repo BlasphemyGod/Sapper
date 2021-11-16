@@ -143,6 +143,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             on_field_click(hWnd, &field, 1);
             InvalidateRect(hWnd, NULL, TRUE);
         } break;
+    case WM_LBUTTONUP:
+        {
+            on_save_load_click(hWnd, &field);
+        }
     case WM_RBUTTONDOWN:
         {
             on_field_click(hWnd, &field, 2);
@@ -157,6 +161,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             RECT bkRect = { 0, 0, 436, 100 }; FillRect(hdc, &bkRect, headerBrush);
+            draw_save_load_buttons(hWnd, hdc);
             draw_timer(hdc);
             draw_field(hdc, hWnd, &field);
             EndPaint(hWnd, &ps);
