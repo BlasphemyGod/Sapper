@@ -146,7 +146,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_LBUTTONUP:
         {
             on_save_load_click(hWnd, &field);
-        }
+        } break;
     case WM_RBUTTONDOWN:
         {
             on_field_click(hWnd, &field, 2);
