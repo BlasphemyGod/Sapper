@@ -150,7 +150,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             if (!on_records_screen()) {
                 on_save_load_click(hWnd, &field);
-                on_leaders_table_click(hWnd);
+                on_leaders_table_click(hWnd, &field);
+            }
+            else {
+                on_leaders_table_return_click(hWnd, &field);
             }
         } break;
     case WM_RBUTTONDOWN:
@@ -174,6 +177,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 draw_leaders_table_button(hWnd, hdc);
                 draw_timer(hdc);
                 draw_field(hdc, hWnd, &field);
+            }
+            else {
+                RECT bkRect = { 0, 100, 436, 559 }; FillRect(hdc, &bkRect, headerBrush);
+                draw_leaders_table_return_button(hWnd, hdc);
+                draw_leaders_table(hdc);
             }
             EndPaint(hWnd, &ps);
         }

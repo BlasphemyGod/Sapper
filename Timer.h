@@ -7,6 +7,8 @@ void set_timer(int seconds);
 
 void start_timer();
 
+void unpause_timer();
+
 void stop_timer();
 
 void draw_timer(HDC hdc);

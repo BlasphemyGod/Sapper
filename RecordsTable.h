@@ -1,10 +1,11 @@
 #pragma once
 #include "framework.h"
+#include "Field.h"
 
 typedef struct {
 	int win_time;
 	TCHAR name[21];
-	int date;
+	time_t date;
 } Record;
 
 
@@ -33,4 +34,10 @@ void load_records();
 
 void draw_leaders_table_button(HWND hWnd, HDC hdc);
 
-void on_leaders_table_click(HWND hWnd);
+void draw_leaders_table_return_button(HWND hWnd, HDC hdc);
+
+void draw_leaders_table(HDC hdc);
+
+void on_leaders_table_click(HWND hWnd, Field* field);
+
+void on_leaders_table_return_click(HWND hWnd, Field* field);

@@ -3,10 +3,13 @@
 #include "framework.h"
 #include "Timer.h"
 #include "RecordsTable.h"
+#define _CRT_SECURE_NO_WARNINGS
 
 const HFONT hFont = CreateFont(-20, 0, 0, 0, 0, ANSI_CHARSET, 0, 0, 0, 0, 0, 0, 0, TEXT("Arial"));
 const TCHAR* record_label = TEXT("Таблица рекордов");
-RECT button_rect = { 10, 90, 212, 116 };
+const TCHAR* return_label = TEXT("Вернуться");
+RECT button_rect = { 10, 60, 212, 90 };
+RECT return_rect = { 118, 40, 318, 70 };
 const HPEN hPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
 const HBRUSH casualButtonBrush = CreateSolidBrush(RGB(255, 255, 255));
 const HBRUSH activeButtonBrush = CreateSolidBrush(RGB(222, 222, 222));
@@ -69,7 +72,7 @@ void save_records() {
 	fputwc(L'0', output_file);
 	fprintf(output_file, "%d\n", leaders_table.last);
 	for (int i = 0; i < leaders_table.last; i++) {
-		fwprintf(output_file, L"%s %d %d\n", leaders_table.records[i].name, leaders_table.records[i].win_time, leaders_table.records[i].date);
+		fwprintf(output_file, L"%s %d %p\n", leaders_table.records[i].name, leaders_table.records[i].win_time, leaders_table.records[i].date);
 	}
 }
 
@@ -84,7 +87,7 @@ void save_records_safe() {
 	fwprintf(output_file, L"%d\n", leaders_table.last);
 	TCHAR encoded_record[60] = {};
 	for (int i = 0; i < leaders_table.last; i++) {
-		swprintf_s(encoded_record, 60, L"%s %d %d", leaders_table.records[i].name, leaders_table.records[i].win_time, leaders_table.records[i].date);
+		swprintf_s(encoded_record, 60, L"%s %d %p", leaders_table.records[i].name, leaders_table.records[i].win_time, leaders_table.records[i].date);
 		encode_record(encoded_record);
 		fwprintf(output_file, L"%s\n", encoded_record);
 	}
@@ -99,18 +102,18 @@ void load_records() {
 	}
 	TCHAR is_encoded_mark = fgetwc(input_file);
 	if (is_encoded_mark == '0') {
-		fwscanf(input_file, L"%d", &leaders_table.last);
+		fwscanf_s(input_file, L"%d", &leaders_table.last);
 		for (int i = 0; i < leaders_table.last; i++) {
-			fwscanf(input_file, L"%s %d %d", &leaders_table.records[i].name, &leaders_table.records[i].win_time, &leaders_table.records[i].date);
+			fwscanf_s(input_file, L"%s %d %p", &leaders_table.records[i].name, &leaders_table.records[i].win_time, &leaders_table.records[i].date);
 		}
 	}
 	else if (is_encoded_mark == '1') {
-		fwscanf(input_file, L"%d", &leaders_table.last);
+		fwscanf_s(input_file, L"%d", &leaders_table.last);
 		TCHAR buffer[60] = {};
 		for (int i = 0; i < leaders_table.last; i++) {
 			fgetws(buffer, 60, input_file);
 			decode_record(buffer);
-			swscanf(buffer, L"%s %d %d", &leaders_table.records[i].name, &leaders_table.records[i].win_time, &leaders_table.records[i].date);
+			swscanf_s(buffer, L"%s %d %p", &leaders_table.records[i].name, &leaders_table.records[i].win_time, &leaders_table.records[i].date);
 		}
 	}
 }
@@ -140,12 +143,56 @@ void draw_leaders_table_button(HWND hWnd, HDC hdc) {
 	DrawText(hdc, record_label, lstrlen(record_label), &button_rect, DT_CENTER);
 }
 
-void on_leaders_table_click(HWND hWnd) {
+void draw_leaders_table_return_button(HWND hWnd, HDC hdc) {
+	SetBkMode(hdc, TRANSPARENT);
+	SetTextColor(hdc, RGB(0, 0, 0));
+	SelectObject(hdc, hPen);
+	SelectObject(hdc, hFont);
+	POINT mouse;
+	GetCursorPos(&mouse);
+	ScreenToClient(hWnd, &mouse);
+	if (PtInRect(&return_rect, mouse)) {
+		if (GetKeyState(VK_LBUTTON) & 0x8000) {
+			SelectObject(hdc, activeButtonBrush);
+			RoundRect(hdc, return_rect.left, return_rect.top, return_rect.right, return_rect.bottom, 12, 12);
+		}
+		else {
+			SelectObject(hdc, casualButtonBrush);
+			RoundRect(hdc, return_rect.left, return_rect.top, return_rect.right, return_rect.bottom, 12, 12);
+		}
+	}
+	else {
+		SelectObject(hdc, casualButtonBrush);
+		RoundRect(hdc, return_rect.left, return_rect.top, return_rect.right, return_rect.bottom, 12, 12);
+	}
+	DrawText(hdc, return_label, lstrlen(return_label), &return_rect, DT_CENTER);
+}
+
+void draw_leaders_table(HDC hdc) {
+	TCHAR buffer[100];
+	for (int i = 0; i < leaders_table.last; i++) {
+		swprintf(buffer, 100, L"%2d место| %3d | %21s | %21s", i + 1, leaders_table.records[i].win_time, leaders_table.records[i].name, _wctime64(&leaders_table.records[i].date));
+	}
+}
+
+void on_leaders_table_click(HWND hWnd, Field* field) {
 	POINT mouse;
 	GetCursorPos(&mouse);
 	ScreenToClient(hWnd, &mouse);
 	if (PtInRect(&button_rect, mouse)) {
-		stop_timer();
+		if (!field->is_first_cell)
+			stop_timer();
+		change_records_screen();
+	}
+}
+
+void on_leaders_table_return_click(HWND hWnd, Field* field) {
+	POINT mouse;
+	GetCursorPos(&mouse);
+	ScreenToClient(hWnd, &mouse);
+	if (PtInRect(&return_rect, mouse)) {
+		if (!field->is_first_cell)
+			unpause_timer();
 		change_records_screen();
 	}
 }

@@ -212,9 +212,11 @@ void on_field_click(HWND hWnd, Field* field, int mouse_button) {
     CellPosition cell = cell_from_mouse(hWnd, field);
     if (mouse_button == 1) {
         if (field->is_first_cell) {
-            start_timer();
-            save_first_click(field, cell.row, cell.col);
-            field->is_first_cell = 0;
+            if (cell.col != -1) {
+                start_timer();
+                save_first_click(field, cell.row, cell.col);
+                field->is_first_cell = 0;
+            }
         }
         open_cell(field, cell.row, cell.col);
     }

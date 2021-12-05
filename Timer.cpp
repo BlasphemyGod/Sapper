@@ -26,6 +26,11 @@ void start_timer() {
     is_started = 1;
 }
 
+void unpause_timer() {
+    set_timer(get_timer());
+    is_started = 1;
+}
+
 void stop_timer() {
     end_time = time(NULL);
     is_started = 0;
