@@ -10,6 +10,6 @@ typedef struct {
 
 typedef struct {
 	Record records[11];
-	int last_record;
+	int last;
 } RecordsTable;
 
