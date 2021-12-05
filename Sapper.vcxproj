@@ -142,6 +142,7 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="RecordsTable.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sapper.h" />
     <ClInclude Include="SaveManager.h" />
@@ -150,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="RecordsTable.cpp" />
     <ClCompile Include="Sapper.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="SaveManager.cpp" />

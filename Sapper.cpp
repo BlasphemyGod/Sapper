@@ -7,6 +7,7 @@
 #include "Cell.h"
 #include "Timer.h"
 #include "SaveManager.h"
+#include "RecordsTable.h"
 
 #define MAX_LOADSTRING 100
 
