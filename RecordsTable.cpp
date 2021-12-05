@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include "framework.h"
+#include "Timer.h"
 #include "RecordsTable.h"
 
 const HFONT hFont = CreateFont(-20, 0, 0, 0, 0, ANSI_CHARSET, 0, 0, 0, 0, 0, 0, 0, TEXT("Arial"));
@@ -13,15 +14,15 @@ const HBRUSH activeButtonBrush = CreateSolidBrush(RGB(222, 222, 222));
 RecordsTable leaders_table = {};
 int is_on_records_screen = 0;
 
-int onRecordsScreen() {
+int on_records_screen() {
 	return is_on_records_screen;
 }
 
-void changeRecordsScreen() {
+void change_records_screen() {
 	is_on_records_screen = 1 - is_on_records_screen;
 }
 
-int compareRecords(Record first, Record second) {
+int compare_records(Record first, Record second) {
 	if (first.win_time < second.win_time)
 		return -1;
 	if (first.win_time > second.win_time)
@@ -29,13 +30,13 @@ int compareRecords(Record first, Record second) {
 	return 0;
 }
 
-int addRecord(int win_time, TCHAR name[]) {
+int add_record(int win_time, TCHAR name[]) {
 	Record record = { win_time, {}, time(NULL) };
 	lstrcpyn(record.name, name, 21);
 	leaders_table.records[leaders_table.last] = record;
 	int result = 0;
 	for (int i = leaders_table.last; i > 0; i--) {
-		if (compareRecords(leaders_table.records[i], leaders_table.records[i - 1]) == -1) {
+		if (compare_records(leaders_table.records[i], leaders_table.records[i - 1]) == -1) {
 			Record temp = leaders_table.records[i];
 			leaders_table.records[i] = leaders_table.records[i - 1];
 			leaders_table.records[i - 1] = temp;
@@ -46,19 +47,19 @@ int addRecord(int win_time, TCHAR name[]) {
 	return result;
 }
 
-void encodeRecord(TCHAR str[]) {
+void encode_record(TCHAR str[]) {
 	for (int i = 0; str[i] != L'\0'; i++) {
 		str[i] += 10;
 	}
 }
 
-void decodeRecord(TCHAR str[]) {
+void decode_record(TCHAR str[]) {
 	for (int i = 0; str[i] != L'\0'; i++) {
 		str[i] -= 10;
 	}
 }
 
-void saveRecords() {
+void save_records() {
 	FILE* output_file;
 	fopen_s(&output_file, "leaders_table.txt", "wt");
 	if (output_file == NULL) {
@@ -72,7 +73,7 @@ void saveRecords() {
 	}
 }
 
-void saveRecordsSafe() {
+void save_records_safe() {
 	FILE* output_file;
 	fopen_s(&output_file, "leaders_table.txt", "wt");
 	if (output_file == NULL) {
@@ -84,12 +85,12 @@ void saveRecordsSafe() {
 	TCHAR encoded_record[60] = {};
 	for (int i = 0; i < leaders_table.last; i++) {
 		swprintf_s(encoded_record, 60, L"%s %d %d", leaders_table.records[i].name, leaders_table.records[i].win_time, leaders_table.records[i].date);
-		encodeRecord(encoded_record);
+		encode_record(encoded_record);
 		fwprintf(output_file, L"%s\n", encoded_record);
 	}
 }
 
-void loadRecords() {
+void load_records() {
 	FILE* input_file;
 	fopen_s(&input_file, "leaders_table.txt", "wt");
 	if (input_file == NULL) {
@@ -108,13 +109,13 @@ void loadRecords() {
 		TCHAR buffer[60] = {};
 		for (int i = 0; i < leaders_table.last; i++) {
 			fgetws(buffer, 60, input_file);
-			decodeRecord(buffer);
+			decode_record(buffer);
 			swscanf(buffer, L"%s %d %d", &leaders_table.records[i].name, &leaders_table.records[i].win_time, &leaders_table.records[i].date);
 		}
 	}
 }
 
-void drawLeadersTableButton(HWND hWnd, HDC hdc) {
+void draw_leaders_table_button(HWND hWnd, HDC hdc) {
 	SetBkMode(hdc, TRANSPARENT);
 	SetTextColor(hdc, RGB(0, 0, 0));
 	SelectObject(hdc, hPen);
@@ -137,4 +138,14 @@ void drawLeadersTableButton(HWND hWnd, HDC hdc) {
 		RoundRect(hdc, button_rect.left, button_rect.top, button_rect.right, button_rect.bottom, 12, 12);
 	}
 	DrawText(hdc, record_label, lstrlen(record_label), &button_rect, DT_CENTER);
+}
+
+void on_leaders_table_click(HWND hWnd) {
+	POINT mouse;
+	GetCursorPos(&mouse);
+	ScreenToClient(hWnd, &mouse);
+	if (PtInRect(&button_rect, mouse)) {
+		stop_timer();
+		change_records_screen();
+	}
 }

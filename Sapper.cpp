@@ -141,16 +141,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     case WM_LBUTTONDOWN:
         {
-            on_field_click(hWnd, &field, 1);
+            if (!on_records_screen()) {
+                on_field_click(hWnd, &field, 1);
+            }
             InvalidateRect(hWnd, NULL, TRUE);
         } break;
     case WM_LBUTTONUP:
         {
-            on_save_load_click(hWnd, &field);
+            if (!on_records_screen()) {
+                on_save_load_click(hWnd, &field);
+                on_leaders_table_click(hWnd);
+            }
         } break;
     case WM_RBUTTONDOWN:
         {
-            on_field_click(hWnd, &field, 2);
+            if (!on_records_screen()) {
+                on_field_click(hWnd, &field, 2);
+            }
             InvalidateRect(hWnd, NULL, TRUE);
         } break;
     case WM_MOUSEMOVE:
@@ -162,9 +169,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             RECT bkRect = { 0, 0, 436, 100 }; FillRect(hdc, &bkRect, headerBrush);
-            draw_save_load_buttons(hWnd, hdc);
-            draw_timer(hdc);
-            draw_field(hdc, hWnd, &field);
+            if (!on_records_screen()) {
+                draw_save_load_buttons(hWnd, hdc);
+                draw_leaders_table_button(hWnd, hdc);
+                draw_timer(hdc);
+                draw_field(hdc, hWnd, &field);
+            }
             EndPaint(hWnd, &ps);
         }
         break;
