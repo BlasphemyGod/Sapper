@@ -22,8 +22,24 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-Field field = new_field(0, 100, 30);
+Field field = new_field(0, 100, 15);
 HBRUSH headerBrush = CreateSolidBrush(RGB(74, 117, 44));
+int game_ended = 0;
+
+void switch_on_leaders_table() {
+    if (!field.is_first_cell && !game_ended)
+        stop_timer();
+    if (game_ended)
+        ShowWindow(get_leaders_name_field(), SW_SHOWNORMAL);
+    change_records_screen();
+}
+
+void switch_off_leaders_table() {
+    if (!field.is_first_cell && !game_ended)
+        unpause_timer();
+    ShowWindow(get_leaders_name_field(), SW_HIDE);
+    change_records_screen();
+}
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -102,6 +118,7 @@ void restart_game() {
     restart_field(&field);
     stop_timer();
     set_timer(0);
+    game_ended = 0;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -110,9 +127,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE: 
         {
+            set_leaders_name_field(CreateWindowW(
+                TEXT("edit"), TEXT("Имя игрока"),
+                WS_CHILD | WS_VISIBLE | WS_BORDER | ES_RIGHT, 120, 90, 195, 20,
+                hWnd, 0, hInst, NULL
+            ));
+            ShowWindow(get_leaders_name_field(), SW_HIDE);
             SetTimer(hWnd, 1, 500, NULL);
             SetMenu(hWnd, NULL);
             restart_field(&field);
+            load_records();
             break;
         }
     case WM_TIMER:
@@ -142,7 +166,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_LBUTTONDOWN:
         {
             if (!on_records_screen()) {
-                on_field_click(hWnd, &field, 1);
+                int result = on_field_click(hWnd, &field, 1);
+                if (result == -1) {
+                    MessageBox(hWnd, TEXT("YOU LOSE!"), TEXT("Oh my God!"), MB_OK);
+                    restart_game();
+                }
+                else if (result == 1) {
+                    game_ended = 1;
+                    switch_on_leaders_table();
+                }
             }
             InvalidateRect(hWnd, NULL, TRUE);
         } break;
@@ -150,10 +182,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             if (!on_records_screen()) {
                 on_save_load_click(hWnd, &field);
-                on_leaders_table_click(hWnd, &field);
+                on_leaders_table_click(hWnd);
             }
             else {
-                on_leaders_table_return_click(hWnd, &field);
+                if (game_ended) {
+                    on_leaders_table_insert_click(hWnd);
+                }
+                on_leaders_table_return_click(hWnd);
             }
         } break;
     case WM_RBUTTONDOWN:
@@ -182,11 +217,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 RECT bkRect = { 0, 100, 436, 559 }; FillRect(hdc, &bkRect, headerBrush);
                 draw_leaders_table_return_button(hWnd, hdc);
                 draw_leaders_table(hdc);
+                if (game_ended) {
+                    draw_leaders_table_insert_button(hWnd, hdc);
+                }
             }
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
+        save_records_safe();
         PostQuitMessage(0);
         break;
     default:

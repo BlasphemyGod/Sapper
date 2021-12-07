@@ -52,4 +52,4 @@ void draw_field(HDC hdc, HWND hWnd, Field* field);
 
 void save_first_click(Field* field, int row, int col);
 
-void on_field_click(HWND hWnd, Field* field, int mouse_button);
+int on_field_click(HWND hWnd, Field* field, int mouse_button);
