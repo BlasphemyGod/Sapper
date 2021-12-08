@@ -10,6 +10,8 @@
 #include "RecordsTable.h"
 
 #define MAX_LOADSTRING 100
+#define WINDOW_WIDTH 436
+#define WINDOW_HEIGHT 559
 
 // Глобальные переменные:
 HINSTANCE hInst;                                
@@ -101,7 +103,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance;
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, 436, 559, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, WINDOW_WIDTH, WINDOW_HEIGHT, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -206,21 +208,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            RECT bkRect = { 0, 0, 436, 100 }; FillRect(hdc, &bkRect, headerBrush);
+            HDC buffer = CreateCompatibleDC(hdc);
+            HBITMAP bitmap = CreateCompatibleBitmap(hdc, WINDOW_WIDTH, WINDOW_HEIGHT);
+            SelectObject(buffer, bitmap);
+            RECT bkRect = { 0, 0, 436, 100 }; FillRect(buffer, &bkRect, headerBrush);
             if (!on_records_screen()) {
-                draw_save_load_buttons(hWnd, hdc);
-                draw_leaders_table_button(hWnd, hdc);
-                draw_timer(hdc);
-                draw_field(hdc, hWnd, &field);
+                draw_save_load_buttons(hWnd, buffer);
+                draw_leaders_table_button(hWnd, buffer);
+                draw_timer(buffer);
+                draw_field(buffer, hWnd, &field);
             }
             else {
-                RECT bkRect = { 0, 100, 436, 559 }; FillRect(hdc, &bkRect, headerBrush);
-                draw_leaders_table_return_button(hWnd, hdc);
-                draw_leaders_table(hdc);
+                RECT bkRect = { 0, 100, 436, 559 }; FillRect(buffer, &bkRect, headerBrush);
+                draw_leaders_table_return_button(hWnd, buffer);
+                draw_leaders_table(buffer);
                 if (game_ended) {
-                    draw_leaders_table_insert_button(hWnd, hdc);
+                    draw_leaders_table_insert_button(hWnd, buffer);
                 }
             }
+            BitBlt(hdc, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, buffer, 0, 0, SRCCOPY);
             EndPaint(hWnd, &ps);
         }
         break;
