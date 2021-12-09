@@ -3,15 +3,15 @@
 #include "Field.h"
 
 typedef struct {
-	unsigned int win_time;
-	TCHAR name[21];
-	time_t date;
+    unsigned int win_time;
+    TCHAR name[21];
+    time_t date;
 } Record;
 
 
 typedef struct {
-	Record records[11];
-	int last;
+    Record records[11];
+    int last;
 } RecordsTable;
 
 HWND get_leaders_name_field();
