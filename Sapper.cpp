@@ -12,6 +12,7 @@
 #define MAX_LOADSTRING 100
 #define WINDOW_WIDTH 436
 #define WINDOW_HEIGHT 559
+#define BOMB_COUNT 15
 
 // Глобальные переменные:
 HINSTANCE hInst;                                
@@ -24,7 +25,7 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-Field field = new_field(0, 100, 15);
+Field field = new_field(0, 100, BOMB_COUNT);
 HBRUSH headerBrush = CreateSolidBrush(RGB(74, 117, 44));
 int game_ended = 0;
 
