@@ -9,9 +9,9 @@
 const HFONT hFont = CreateFont(-20, 0, 0, 0, 0, ANSI_CHARSET, 0, 0, 0, 0, 0, 0, 0, TEXT("Arial"));
 const HFONT hLeaderFont = CreateFont(-12, 0, 0, 0, 0, ANSI_CHARSET, 0, 0, 0, 0, 0, 0, 0, TEXT("Arial"));
 const HFONT hInsertFont = CreateFont(-12, 0, 0, 0, 0, ANSI_CHARSET, 0, 0, 0, 0, 0, 0, 0, TEXT("Arial"));
-const TCHAR* record_label = TEXT("Таблица рекордов");
-const TCHAR* return_label = TEXT("Вернуться");
-const TCHAR* insert_label = TEXT("Сохранить");
+const TCHAR* record_label = TEXT("РўР°Р±Р»РёС†Р° СЂРµРєРѕСЂРґРѕРІ");
+const TCHAR* return_label = TEXT("Р’РµСЂРЅСѓС‚СЊСЃСЏ");
+const TCHAR* insert_label = TEXT("РЎРѕС…СЂР°РЅРёС‚СЊ");
 RECT button_rect = { 10, 60, 212, 90 };
 RECT return_rect = { 118, 40, 318, 70 };
 RECT insert_rect = { 315, 90, 400, 110 };
@@ -225,7 +225,7 @@ void draw_leaders_table(HDC hdc) {
     SelectObject(hdc, hPen);
     SelectObject(hdc, hLeaderFont);
     for (int i = 0; i < leaders_table.last; i++) {
-        swprintf(buffer, 100, L"%2d место | %3d секунд | %21s | %21s", i + 1, leaders_table.records[i].win_time, leaders_table.records[i].name, _wctime64(&leaders_table.records[i].date));
+        swprintf(buffer, 100, L"%2d РјРµСЃС‚Рѕ | %3d СЃРµРєСѓРЅРґ | %21s | %21s", i + 1, leaders_table.records[i].win_time, leaders_table.records[i].name, _wctime64(&leaders_table.records[i].date));
         DrawText(hdc, buffer, lstrlen(buffer), &text_rect, DT_CENTER);
         OffsetRect(&text_rect, 0, 30);
     }

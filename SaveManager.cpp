@@ -5,8 +5,8 @@
 #include "SaveManager.h"
 
 const HFONT hFont = CreateFont(-20, 0, 0, 0, 0, ANSI_CHARSET, 0, 0, 0, 0, 0, 0, 0, TEXT("Arial"));
-const TCHAR* save_label = TEXT("Сохранить");
-const TCHAR* load_label = TEXT("Загрузить");
+const TCHAR* save_label = TEXT("РЎРѕС…СЂР°РЅРёС‚СЊ");
+const TCHAR* load_label = TEXT("Р—Р°РіСЂСѓР·РёС‚СЊ");
 RECT save_rect = {232, 10, 400, 36};
 RECT load_rect = {232, 46, 400, 72};
 const HPEN hPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
