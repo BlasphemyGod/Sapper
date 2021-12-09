@@ -7,7 +7,7 @@ int start_time = 0;
 int end_time = 0;
 int is_started = 0;
 const HFONT hFont = CreateFont(-32, 0, 0, 0, 0, ANSI_CHARSET, 0, 0, 0, 0, 0, 0, 0, TEXT("Arial"));
-const TCHAR* label = TEXT("Р’СЂРµРјСЏ:");
+const TCHAR* label = TEXT("Время:");
 RECT label_rect = { 10, 10, 110, 66 };
 TCHAR timer_value[20];
 RECT timer_rect = { 110, 10, 212, 66 };
