@@ -253,10 +253,12 @@ void on_leaders_table_insert_click(HWND hWnd) {
 	POINT mouse;
 	GetCursorPos(&mouse);
 	ScreenToClient(hWnd, &mouse);
-	if (PtInRect(&return_rect, mouse)) {
+	if (PtInRect(&insert_rect, mouse)) {
 		TCHAR name_buffer[21];
 		GetWindowText(leaders_name_field, name_buffer, 21);
 		add_record(get_timer(), name_buffer);
 		restart_game();
+		switch_off_leaders_table();
+		switch_on_leaders_table();
 	}
 }
