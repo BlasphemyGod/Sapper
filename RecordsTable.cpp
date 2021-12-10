@@ -225,7 +225,7 @@ void draw_leaders_table(HDC hdc) {
     SelectObject(hdc, hPen);
     SelectObject(hdc, hLeaderFont);
     for (int i = 0; i < leaders_table.last; i++) {
-        TCHAR date_buffer[21] = {};
+        TCHAR date_buffer[26] = {};
         _wctime64_s(date_buffer, &leaders_table.records[i].date);
         swprintf(buffer, 100, L"%2d место | %3d секунд | %21s | %21s", i + 1, leaders_table.records[i].win_time, leaders_table.records[i].name, date_buffer);
         DrawText(hdc, buffer, lstrlen(buffer), &text_rect, DT_CENTER);
