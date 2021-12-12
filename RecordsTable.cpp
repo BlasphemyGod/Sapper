@@ -60,7 +60,7 @@ int add_record(int win_time, TCHAR name[]) {
             result = 1;
         }
     }
-    leaders_table.last = min(leaders_table.last + 1, 11);
+    leaders_table.last = min(leaders_table.last + 1, 10);
     return result;
 }
 
